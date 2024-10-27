@@ -1,38 +1,35 @@
 const express = require('express');
-const multer = require('multer');
 const cors = require('cors');
-const path = require('path');
 
 const app = express();
-const port = 5000;
+const PORT = 5000;
 
-
-
+// Middleware
 app.use(cors());
+app.use(express.json());
 
+// Ruta raíz opcional
 app.get('/', (req, res) => {
-    res.send('Servidor funcionando');
-  });
-
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
-
-app.post('/upload', upload.single('audio'), (req, res) => {
-    const audioFile = req.file;
-  
-    if (!audioFile) {
-      console.log("No se recibió ningún archivo de audio.");
-      return res.status(400).json({ error: 'No se recibió ningún archivo de audio' });
-    }
-  
-    console.log("Archivo de audio recibido:", audioFile.originalname); // Muestra el nombre del archivo recibido
-    console.log("Tamaño del archivo:", audioFile.size); // Muestra el tamaño del archivo
-  
-    const result = "Este es el resultado simulado de la IA.";
-    res.json({ result });
-  });
-  
-
-app.listen(port, () => {
-  console.log(`Servidor corriendo en http://localhost:${port}`);
+  res.send('Servidor funcionando correctamente');
 });
+
+// Ruta para manejar la transcripción
+app.post('/api/transcription', (req, res) => {
+  const { text } = req.body;
+  console.log("Texto recibido:", text);
+
+  // Lógica adicional, si es necesario
+  const responseMessage = `Texto recibido y procesado: ${text}`;
+
+  // Responder al front-end
+  res.json({ message: responseMessage });
+});
+
+app.listen(PORT, () => {
+  console.log(`Servidor escuchando en http://localhost:${PORT}`);
+});
+
+
+
+
+
