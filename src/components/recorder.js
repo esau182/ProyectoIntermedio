@@ -5,6 +5,7 @@ export default function AudioRecorder() {
   const [isRecording, setIsRecording] = useState(false);
   const [audioURL, setAudioURL] = useState('');
   const [visualizerData, setVisualizerData] = useState(new Uint8Array(0));
+  const [response, setResponse] = useState(null); // Para almacenar la respuesta del servidor
   const mediaRecorderRef = useRef(null);
   const audioContextRef = useRef(null);
   const analyserRef = useRef(null);
@@ -32,16 +33,32 @@ export default function AudioRecorder() {
 
       const chunks = [];
       mediaRecorderRef.current.ondataavailable = (e) => chunks.push(e.data);
-      mediaRecorderRef.current.onstop = () => {
+
+      mediaRecorderRef.current.onstop = async () => {
         const blob = new Blob(chunks, { type: 'audio/ogg; codecs=opus' });
         setAudioURL(URL.createObjectURL(blob));
+
+        // Enviar el audio al servidor
+        const formData = new FormData();
+        formData.append('audio', blob, 'recording.ogg');
+
+        try {
+          const response = await fetch('http://localhost:5000/upload', {
+            method: 'POST',
+            body: formData,
+          });
+          const result = await response.json();
+          setResponse(result); // Almacena la respuesta del servidor
+        } catch (error) {
+          console.error('Error enviando el audio:', error);
+        }
       };
 
       mediaRecorderRef.current.start();
       setIsRecording(true);
       visualize();
     } catch (err) {
-      console.error('Error accessing microphone:', err);
+      console.error('Error accediendo al micrófono:', err);
     }
   };
 
@@ -52,6 +69,7 @@ export default function AudioRecorder() {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
+      setVisualizerData(new Uint8Array(0)); // Reinicia visualizerData
     }
   };
 
@@ -126,7 +144,13 @@ export default function AudioRecorder() {
           Grabando...
         </div>
       )}
+      {response && (
+        <div style={{ marginTop: '15px', color: '#007bff' }}>
+          <strong>Resultado de la IA:</strong> {response.result}
+        </div>
+      )}
     </div>
   );
 }
+
 
