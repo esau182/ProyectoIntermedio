@@ -56,7 +56,7 @@ app.post('/api/login', async (req, res) => {
         // Buscar usuario por nombre de usuario
         const user = await User.findOne({ username });
         if (!user) {
-            return res.status(400).json({ error: 'Usuario no encontrado' });
+            return res.status(400).json({ error: 'Usuario incorrecto' });
         }
 
         // Verificar la contraseña
