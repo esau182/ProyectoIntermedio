@@ -1,16 +1,17 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
-import { Mic, StopCircle, AlertCircle, LogOut } from "lucide-react"
-import { useNavigate } from 'react-router-dom'
+import { useState, useEffect, useRef } from 'react';
+import { Mic, StopCircle, AlertCircle, LogOut, Globe } from "lucide-react";
+import { useNavigate } from 'react-router-dom';
 
-export default function TranscripcionVoz() {
-  const [isListening, setIsListening] = useState(false)
-  const [transcript, setTranscript] = useState('')
-  const [error, setError] = useState(null)
-  const [serverResponse, setServerResponse] = useState('')
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const recognitionRef = useRef(null)
+export default function TranscripcionVozConTraduccion() {
+  const [isListening, setIsListening] = useState(false);
+  const [transcript, setTranscript] = useState('');
+  const [translation, setTranslation] = useState('');
+  const [error, setError] = useState(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isTranslating, setIsTranslating] = useState(false);
+  const recognitionRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,6 +20,7 @@ export default function TranscripcionVoz() {
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.continuous = true;
       recognitionRef.current.interimResults = true;
+      recognitionRef.current.lang = 'es-ES';
 
       recognitionRef.current.onstart = () => {
         setIsListening(true);
@@ -37,7 +39,7 @@ export default function TranscripcionVoz() {
 
       recognitionRef.current.onerror = (event) => {
         console.error('Error de reconocimiento de voz:', event.error);
-        setError(`Error: ${event.error}`);
+        setError(`Error de reconocimiento: ${event.error}`);
         setIsListening(false);
       };
     } else {
@@ -59,24 +61,48 @@ export default function TranscripcionVoz() {
     }
   };
 
-  const sendTranscription = async (text) => {
+  const translateText = async (text) => {
+    setIsTranslating(true);
+    setError(null);
     try {
-      const response = await fetch("http://localhost:5000/api/transcription", {
+      const response = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=es&tl=en&dt=t&q=${encodeURIComponent(text)}`);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      if (data && data[0] && data[0][0] && data[0][0][0]) {
+        setTranslation(data[0][0][0]);
+      } else {
+        throw new Error('No se recibió una traducción válida');
+      }
+    } catch (error) {
+      console.error("Error en la traducción:", error);
+      setError(`Error de traducción: ${error.message}`);
+      setTranslation(`[Translation failed] ${text}`);
+    } finally {
+      setIsTranslating(false);
+    }
+  };
+
+  const sendTranscriptionAndTranslate = async (text) => {
+    try {
+      await fetch("http://localhost:5000/api/transcription", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text }),
       });
-      const data = await response.json();
-      setServerResponse(data.message);
+      await translateText(text);
     } catch (error) {
-      console.error("Error al enviar la transcripción:", error);
-      setError("No se pudo enviar la transcripción");
+      console.error("Error al procesar:", error);
+      setError(`Error al procesar: ${error.message}`);
     }
   };
 
   useEffect(() => {
     if (transcript) {
-      sendTranscription(transcript);
+      sendTranscriptionAndTranslate(transcript);
     }
   }, [transcript]);
 
@@ -85,7 +111,6 @@ export default function TranscripcionVoz() {
   };
 
   const handleLogout = () => {
-    // Limpia el token de autenticación y redirige a la página de login
     localStorage.removeItem('token');
     navigate('/login');
   };
@@ -95,7 +120,7 @@ export default function TranscripcionVoz() {
       display: 'flex',
       flexDirection: 'column',
       minHeight: '100vh',
-      backgroundColor: '#f0f4f8',
+      background: 'linear-gradient(135deg, rgba(52, 152, 219, 0.8), rgba(155, 89, 182, 0.8))',
       padding: '2rem',
       fontFamily: 'Arial, sans-serif',
     },
@@ -106,12 +131,12 @@ export default function TranscripcionVoz() {
       marginBottom: '2rem',
     },
     title: {
-      fontSize: '3rem',
+      fontSize: '2.5rem',
       fontWeight: 'bold',
       color: '#2c3e50',
       textTransform: 'uppercase',
       letterSpacing: '0.1em',
-      textShadow: '2px 2px 4px rgba(0,0,0,0.1)',
+      textShadow: '1px 1px 3px rgba(0,0,0,0.1)',
     },
     menuToggle: {
       background: 'none',
@@ -122,19 +147,28 @@ export default function TranscripcionVoz() {
       position: 'fixed',
       top: 0,
       left: isMenuOpen ? 0 : '-300px',
-      width: '300px',
+      width: '250px',
       height: '100%',
-      backgroundColor: '#ffffff',
+      background: 'linear-gradient(135deg, #000000, #3498db)', // Gradiente de negro a azul
       boxShadow: '2px 0 5px rgba(0,0,0,0.1)',
       transition: 'left 0.3s ease-in-out',
       zIndex: 1000,
+      padding: '1rem',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center', // Centrar los elementos en la barra lateral
+      justifyContent: 'center', // Centrar verticalmente los elementos
     },
+    
     menuContent: {
-      padding: '2rem',
+      padding: '1rem',
+      color: '#fff', // Color del texto en la barra lateral
+      textAlign: 'center', // Centrar el texto
     },
     logoutButton: {
       display: 'flex',
       alignItems: 'center',
+      justifyContent: 'center',
       padding: '0.5rem 1rem',
       backgroundColor: '#e74c3c',
       color: '#ffffff',
@@ -142,10 +176,17 @@ export default function TranscripcionVoz() {
       borderRadius: '4px',
       cursor: 'pointer',
       fontSize: '1rem',
+      fontWeight: 'bold',
+      transition: 'background-color 0.3s ease',
+      width: '100%',
+    },
+    logoutButtonHover: {
+      backgroundColor: '#c0392b',
     },
     contentContainer: {
       display: 'flex',
       flex: 1,
+      padding: '1rem',
     },
     leftSection: {
       flex: '1',
@@ -161,8 +202,8 @@ export default function TranscripcionVoz() {
       paddingLeft: '2rem',
     },
     button: {
-      width: '220px',
-      height: '220px',
+      width: '200px',
+      height: '200px',
       borderRadius: '50%',
       fontSize: '1.5rem',
       fontWeight: 'bold',
@@ -183,11 +224,11 @@ export default function TranscripcionVoz() {
     },
     icon: {
       marginBottom: '0.5rem',
-      width: '64px',
-      height: '64px',
+      width: '50px',
+      height: '50px',
     },
     statusBox: {
-      fontSize: '2rem',
+      fontSize: '1.8rem',
       marginBottom: '2rem',
       padding: '1rem',
       backgroundColor: '#ffffff',
@@ -216,31 +257,26 @@ export default function TranscripcionVoz() {
   return (
     <div style={styles.pageContainer}>
       <header style={styles.header}>
-        <h1 style={styles.title}>Habla y Lee</h1>
-        <button onClick={toggleMenu} style={styles.menuToggle} aria-label="Abrir menú">
-          <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="10"/>
-            <circle cx="12" cy="10" r="3"/>
-            <path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"/>
-          </svg>
+        <h1 style={styles.title}>VoxTranslate</h1>
+        <button style={styles.menuToggle} onClick={toggleMenu}>
+          <Globe size={32} />
         </button>
       </header>
-      <div style={styles.menu}>
+
+      <nav style={styles.menu}>
         <div style={styles.menuContent}>
-          <button onClick={handleLogout} style={styles.logoutButton}>
-            <LogOut style={{ marginRight: '0.5rem' }} />
-            Cerrar sesión
+          <h2>Opciones</h2>
+          <button style={styles.logoutButton} onClick={handleLogout}>
+            <LogOut size={20} /> Cerrar sesión
           </button>
         </div>
-      </div>
+      </nav>
+
       <div style={styles.contentContainer}>
         <div style={styles.leftSection}>
           <button 
+            style={{ ...styles.button, ...(isListening ? styles.buttonListening : {}) }} 
             onClick={toggleListening}
-            style={{
-              ...styles.button,
-              ...(isListening ? styles.buttonListening : {})
-            }}
           >
             {isListening ? (
               <>
@@ -258,20 +294,21 @@ export default function TranscripcionVoz() {
         <div style={styles.rightSection}>
           {error && (
             <div style={styles.errorBox}>
-              <AlertCircle style={{ marginRight: '0.5rem', color: '#ef5350' }} />
-              <span>{error}</span>
+              <AlertCircle size={20} style={{ marginRight: '0.5rem' }} />
+              {error}
             </div>
           )}
           <div style={styles.statusBox}>
-            <strong>Estado:</strong> {isListening ? 'Escuchando...' : 'No escuchando'}
+            {isListening ? 'Escuchando...' : 'Listo para escuchar'}
           </div>
           <div style={styles.transcriptBox}>
-            <h2 style={{ fontSize: '1.8rem', marginBottom: '1rem', color: '#2c3e50' }}>Transcripción:</h2>
-            <p style={{ fontSize: '1.2rem', lineHeight: '1.6' }}>{transcript || 'Ninguna transcripción aún'}</p>
+            <h3>Transcripción:</h3>
+            <p>{transcript || 'No hay transcripción disponible'}</p>
+            <h3>Traducción:</h3>
+            <p>{translation || 'No hay traducción disponible'}</p>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
-
