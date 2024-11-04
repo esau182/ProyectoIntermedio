@@ -88,7 +88,7 @@ export default function TranscripcionVozConTraduccion() {
 
   const sendTranscriptionAndTranslate = async (text) => {
     try {
-      await fetch("http://localhost:5000/api/transcription", {
+      await fetch("https://proyectointermedio-1asdas.onrender.com/api/transcription", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text }),
