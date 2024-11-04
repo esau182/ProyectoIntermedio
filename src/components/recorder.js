@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { Mic, StopCircle, AlertCircle, LogOut } from "lucide-react"
+import { useNavigate } from 'react-router-dom'
 
 export default function TranscripcionVoz() {
   const [isListening, setIsListening] = useState(false)
@@ -10,6 +11,7 @@ export default function TranscripcionVoz() {
   const [serverResponse, setServerResponse] = useState('')
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const recognitionRef = useRef(null)
+  const navigate = useNavigate();
 
   useEffect(() => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -83,7 +85,9 @@ export default function TranscripcionVoz() {
   };
 
   const handleLogout = () => {
-    console.log("Cerrando sesión...");
+    // Limpia el token de autenticación y redirige a la página de login
+    localStorage.removeItem('token');
+    navigate('/login');
   };
 
   const styles = {
@@ -270,3 +274,4 @@ export default function TranscripcionVoz() {
     </div>
   )
 }
+
