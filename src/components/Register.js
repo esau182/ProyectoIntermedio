@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
+import LogoTraductor from './Img/LogoTraductor.png'; // Ajusta la ruta si es necesario
 
 function Register() {
   const [username, setUsername] = useState('');
@@ -41,11 +42,16 @@ function Register() {
       }}>
         
         {/* Imagen de fondo */}
-        <div style={{ 
-          flex: 1, 
-          backgroundImage: 'url(https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/img1.webp)', 
-          backgroundSize: 'cover' 
-        }}></div>
+        <div
+          style={{
+            flex: 1,
+            backgroundImage:
+              "url(https://media.istockphoto.com/id/1422998870/es/foto/el-concepto-de-software-para-la-traducci%C3%B3n-entre-diferentes-idiomas-la-persona-trabaja-en-la.jpg?s=612x612&w=0&k=20&c=R0DKt-c5WeYtFD_337Ssvcf4tMyu4FL186IUgzGuvHg=)",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+          }}
+        ></div>
         
         {/* Sección de registro */}
         <div style={{ 
@@ -61,7 +67,17 @@ function Register() {
           boxShadow: '0px 4px 8px rgba(255, 255, 255, 0.1)' 
         }}>
           <div style={{ marginBottom: '1rem', textAlign: 'center' }}>
-            <h2 style={{ fontSize: '2rem', fontWeight: 'bold', color: '#fff' }}>Logo</h2>
+            {/* Imagen del logo con fondo circular */}
+            <img
+              src={LogoTraductor}
+              alt="Logo Traductor"
+              style={{
+                width: "150px",
+                marginBottom: "1rem",
+                borderRadius: "50%",
+      
+              }}
+            />
             <h5 style={{ color: '#ddd', marginBottom: '1.5rem' }}>Crea una cuenta nueva</h5>
           </div>
 
@@ -130,3 +146,4 @@ function Register() {
 }
 
 export default Register;
+
