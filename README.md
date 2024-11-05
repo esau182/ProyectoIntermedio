@@ -1,5 +1,5 @@
 # VoxTranslate
-# Overview
+## Overview
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 This guide explains how to set up and deploy the project on a local machine or a hosting platform.
@@ -8,7 +8,7 @@ This project is a powerful voice transcription and translation web application d
 
 Using cutting-edge technology, it captures spoken words through the microphone, transcribes them into text, and provides a real-time translation.
 
-# Features
+## Features
 
 - Voice Transcription: Converts spoken language into text accurately in real time using the browser’s built-in speech recognition capabilities.
 
@@ -62,7 +62,7 @@ node server.js
 ```
 The server should now be running at http://localhost:5000.
 
-## Run the Frontend
+### Run the Frontend
 
 To start the frontend part of the project, run:
 ```bash
@@ -70,11 +70,11 @@ npm start
 ```
 Visit http://localhost:3000 in your browser to access the application.
 
-## Deployment
+### Deployment
 
 The project is deployed on Render. To access the live application, visit: https://proyectointermedio-1777777.onrender.com/login
 
-## Technologies Used
+### Technologies Used
 
 - Front-end: React.
 
