@@ -5,8 +5,11 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 ## Prerequisites
 
 Node.js (version 14 or higher)
+
 MongoDB Atlas account and database set up
+
 Git for version control
+
 
 ### Clone the Repository
 
@@ -64,7 +67,11 @@ IA: Web Speech API.
 
 This project is licensed under the MIT License. See the LICENSE file for details.
 
+
+## Login
 ![image](https://github.com/user-attachments/assets/df03e166-94b7-4356-a0eb-80962966b10b)
+
+
 
 
 
