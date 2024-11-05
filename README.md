@@ -4,25 +4,27 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 This guide explains how to set up and deploy the project on a local machine or a hosting platform.
 
-This project is a powerful voice transcription and translation web application designed to make language translation accessible and efficient. Using cutting-edge technology, it captures spoken words through the microphone, transcribes them into text, and provides a real-time translation.
+This project is a powerful voice transcription and translation web application designed to make language translation accessible and efficient. 
+
+Using cutting-edge technology, it captures spoken words through the microphone, transcribes them into text, and provides a real-time translation.
 
 # Features
 
-Voice Transcription: Converts spoken language into text accurately in real time using the browser’s built-in speech recognition capabilities.
+- Voice Transcription: Converts spoken language into text accurately in real time using the browser’s built-in speech recognition capabilities.
 
-Language Translation: Provides instant translation of transcribed text, making it easy for users to understand or communicate in different languages.
+- Language Translation: Provides instant translation of transcribed text, making it easy for users to understand or communicate in different languages.
 
-User Authentication: Secured login and registration features to protect user data, with token-based authentication for enhanced security.
+- User Authentication: Secured login and registration features to protect user data, with token-based authentication for enhanced security.
 
-Secure Data Storage: Utilizes MongoDB for efficient data management, and bcrypt for secure password storage.
+- Secure Data Storage: Utilizes MongoDB for efficient data management, and bcrypt for secure password storage.
 
 ## Prerequisites
 
-Node.js (version 14 or higher)
+- Node.js (version 14 or higher)
 
-MongoDB Atlas account and database set up
+- MongoDB Atlas account and database set up
 
-Git for version control
+- Git for version control
 
 ### Clone the Repository
 
@@ -46,8 +48,9 @@ npm install
 
 Create a .env file in the root directory and add your MongoDB URI, along with other environment variables:
 
-MONGODB_URI=your-mongodb-uri
-SECRET_KEY=your-jwt-secret-key
+- MONGODB_URI=your-mongodb-uri
+   
+- SECRET_KEY=your-jwt-secret-key
 
 Make sure your MongoDB IP access list allows connections from your local machine or from any location, as needed.
 
@@ -73,13 +76,13 @@ The project is deployed on Render. To access the live application, visit: https:
 
 ## Technologies Used
 
-Front-end: React.
+- Front-end: React.
 
-Back-End: Node.js y Express.
+- Back-End: Node.js y Express.
 
-DataBase: MongoDB Atlas.
+- DataBase: MongoDB Atlas.
 
-IA: Web Speech API.
+- IA: Web Speech API.
 
 ## License
 
