@@ -72,7 +72,7 @@ Visit http://localhost:3000 in your browser to access the application.
 
 ### Deployment
 
-The project is deployed on Render. To access the live application, visit: https://proyectointermedio-1777777.onrender.com/login
+The project is deployed on Render. To access the live application, visit: https://proyectointermedio-1777777.onrender.com
 
 ### Technologies Used
 
